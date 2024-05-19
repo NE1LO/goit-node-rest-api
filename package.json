@@ -1,0 +1,23 @@
+{
+  "name": "goit-node-rest-api",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./services/app.js",
+    "dev": "nodemon ./services/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.1",
+    "morgan": "^1.10.0"
+  }
+}
