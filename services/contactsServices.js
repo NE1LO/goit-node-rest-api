@@ -61,13 +61,20 @@ async function updateContact(id, updatedContact) {
     const contacts = await getAllContacts();
     const index = contacts.findIndex((contact) => contact.id === id);
     if (index !== -1) {
-      contacts[index] = { ...contacts[index], ...updatedContact };
+      // Зберігаємо поточний контакт
+      const currentContact = contacts[index];
+      const updated = {
+        ...currentContact,
+        ...updatedContact,
+      };
+      contacts[index] = updated;
       await writeContacts(contacts);
-      return contacts[index];
+      return updated;
     }
     return null;
   } catch (error) {
     console.error("Помилка при оновленні контакту", error);
+    throw error; // Передаємо помилку далі для обробки вище
   }
 }
 
