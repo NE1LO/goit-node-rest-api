@@ -48,7 +48,7 @@ export const deleteContactController = async (req, res) => {
 export const createContactController = async (req, res) => {
   const { name, email, phone } = req.body;
   try {
-    const newContact = await createContactService({ name, email, phone });
+    const newContact = await createContactService(name, email, phone);
     res.status(201).json(newContact);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
