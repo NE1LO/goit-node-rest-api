@@ -40,6 +40,7 @@ export const deleteContactController = async (req, res) => {
     }
     res.status(200).json({ message: "Contact deleted", contact });
   } catch (error) {
+    zz;
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -47,12 +48,7 @@ export const deleteContactController = async (req, res) => {
 export const createContactController = async (req, res) => {
   const { name, email, phone } = req.body;
   try {
-    const value = await createContactSchema.validateAsync({
-      name,
-      email,
-      phone,
-    });
-    const newContact = await createContactService(value);
+    const newContact = await createContactService({ name, email, phone });
     res.status(201).json(newContact);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -63,8 +59,7 @@ export const updateContactController = async (req, res) => {
   const { id } = req.params;
   const updatedContact = req.body;
   try {
-    const value = await updateContactSchema.validateAsync(updatedContact);
-    const contact = await updateContactService(id, value);
+    const contact = await updateContactService(id, updatedContact);
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
     }
