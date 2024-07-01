@@ -13,7 +13,7 @@ export const getContact = async (req, res) => {
       });
     }
     res.status(200).json({
-      status: "success",
+      status: "200",
       message: `Successfully found contact with id ${contactId}!`,
       data: contact,
     });
