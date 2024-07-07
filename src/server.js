@@ -1,26 +1,30 @@
 import express from "express";
 import cors from "cors";
-import pinoHttp from "pino-http";
-import { getContacts } from "./controllers/contacts.js";
-import { getContact } from "./controllers/contactById.js";
+import pino from "pino-http";
+import router from "./routers/contacts.js";
+
+import { notFoundHandler } from "./utils/notFoundHandler.js";
+import { errorHandler } from "./utils/errorHandler.js";
 
 const PORT = process.env.PORT || 3000;
 
 const setupServer = () => {
   const app = express();
-  app.use(express.json());
+  app.use(
+    express.json({ type: ["application/json", "application/vnd.api+json"] })
+  );
   app.use(cors());
-  app.use(pinoHttp());
+  app.use(
+    pino({
+      transport: { target: "pino-pretty" },
+    })
+  );
 
-  app.get("/contacts", getContacts);
+  app.use(router);
 
-  app.get("/contacts/:contactId", getContact);
+  app.use("*", notFoundHandler);
 
-  app.use((req, res) => {
-    res.status(404).json({
-      message: "Not found",
-    });
-  });
+  app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
