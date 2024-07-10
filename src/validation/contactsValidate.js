@@ -7,7 +7,6 @@ export const createContactSchema = Joi.object({
   isFavorite: Joi.boolean().default(false),
   contactType: Joi.string()
     .valid("work", "home", "personal")
-    .required()
     .default("personal"),
 });
 
