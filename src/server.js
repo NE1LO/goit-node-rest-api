@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import pino from "pino-http";
 import router from "./routers/contacts.js";
+import routerAuth from "./routers/auth.js";
+import cookieParser from "cookie-parser";
 
 import { notFoundHandler } from "./utils/notFoundHandler.js";
 import { errorHandler } from "./utils/errorHandler.js";
@@ -14,6 +16,7 @@ const setupServer = () => {
     express.json({ type: ["application/json", "application/vnd.api+json"] })
   );
   app.use(cors());
+  app.use(cookieParser());
   app.use(
     pino({
       transport: { target: "pino-pretty" },
@@ -21,6 +24,7 @@ const setupServer = () => {
   );
 
   app.use(router);
+  app.use(routerAuth);
 
   app.use("*", notFoundHandler);
 

@@ -8,34 +8,47 @@ import {
   patchContactController,
 } from "../controllers/contacts.js";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
-// IMPORT FOR VALIDATION
+import { authenticate } from "../middleware/authenticate.js";
+// ========================================================IMPORT FOR VALIDATION
 import {
   createContactSchema,
   updateContactSchema,
 } from "../validation/contactsValidate.js";
 import validateId from "../middleware/validateId.js";
 import { validateBody } from "../middleware/validateBody.js";
+import { registerSchema } from "../validation/authValidate.js";
 
 const router = Router();
 
-router.use("/contacts/:contactId", validateId("contactId"));
-router.get("/contacts", ctrlWrapper(getAllContactsController));
-router.get("/contacts/:contactId", ctrlWrapper(getContactByIdController));
+router.use("/contacts/:contactId", authenticate, validateId("contactId"));
+router.get("/contacts", authenticate, ctrlWrapper(getAllContactsController));
+router.get(
+  "/contacts/:contactId",
+  authenticate,
+  ctrlWrapper(getContactByIdController)
+);
 
 //#=================================================> CREATE NEW CONTACT
 router.post(
   "/contacts",
   validateBody(createContactSchema),
+  authenticate,
   ctrlWrapper(createContactController)
 );
-router.delete("/contacts/:contactId", ctrlWrapper(deleteContactController));
+router.delete(
+  "/contacts/:contactId",
+  authenticate,
+  ctrlWrapper(deleteContactController)
+);
 router.put(
   "/contacts/:contactId",
+  authenticate,
   validateBody(createContactSchema),
   ctrlWrapper(updateContactController)
 );
 router.patch(
   "/contacts/:contactId",
+  authenticate,
   (req, res, next) => {
     console.log("PATCH request received");
     next();
@@ -43,5 +56,6 @@ router.patch(
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController)
 );
+//#=================================================> Registration
 
 export default router;
