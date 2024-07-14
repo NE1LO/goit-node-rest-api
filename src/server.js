@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import pino from "pino-http";
-import router from "./routers/contacts.js";
+import router from "./routers/index.js";
 import routerAuth from "./routers/auth.js";
 import cookieParser from "cookie-parser";
 
@@ -24,7 +24,6 @@ const setupServer = () => {
   );
 
   app.use(router);
-  app.use(routerAuth);
 
   app.use("*", notFoundHandler);
 
