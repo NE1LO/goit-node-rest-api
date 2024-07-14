@@ -11,16 +11,16 @@ import {
   logout,
 } from "../controllers/auth.js";
 
-const routerAuth = Router();
+const authRouter = Router();
 
 //#=================================================> Registration
-routerAuth.post(
+authRouter.post(
   "/register",
   validateBody(registerSchema),
   ctrlWrapper(register)
 );
-routerAuth.post("/login", validateBody(loginSchema), ctrlWrapper(login));
-routerAuth.post("/refresh", authenticate, ctrlWrapper(refreshSession));
-routerAuth.post("/logout", authenticate, ctrlWrapper(logout));
+authRouter.post("/login", validateBody(loginSchema), ctrlWrapper(login));
+authRouter.post("/refresh", authenticate, ctrlWrapper(refreshSession));
+authRouter.post("/logout", authenticate, ctrlWrapper(logout));
 
-export default routerAuth;
+export default authRouter;
