@@ -18,35 +18,43 @@ import validateId from "../middleware/validateId.js";
 import { validateBody } from "../middleware/validateBody.js";
 import { registerSchema } from "../validation/authValidate.js";
 
-const router = Router();
+const contactsRouter = Router();
 
-router.use("/contacts/:contactId", authenticate, validateId("contactId"));
-router.get("/contacts", authenticate, ctrlWrapper(getAllContactsController));
-router.get(
+contactsRouter.use(
+  "/contacts/:contactId",
+  authenticate,
+  validateId("contactId")
+);
+contactsRouter.get(
+  "/contacts",
+  authenticate,
+  ctrlWrapper(getAllContactsController)
+);
+contactsRouter.get(
   "/contacts/:contactId",
   authenticate,
   ctrlWrapper(getContactByIdController)
 );
 
 //#=================================================> CREATE NEW CONTACT
-router.post(
+contactsRouter.post(
   "/contacts",
   validateBody(createContactSchema),
   authenticate,
   ctrlWrapper(createContactController)
 );
-router.delete(
+contactsRouter.delete(
   "/contacts/:contactId",
   authenticate,
   ctrlWrapper(deleteContactController)
 );
-router.put(
+contactsRouter.put(
   "/contacts/:contactId",
   authenticate,
   validateBody(createContactSchema),
   ctrlWrapper(updateContactController)
 );
-router.patch(
+contactsRouter.patch(
   "/contacts/:contactId",
   authenticate,
   (req, res, next) => {
@@ -58,4 +66,4 @@ router.patch(
 );
 //#=================================================> Registration
 
-export default router;
+export default contactsRouter;
