@@ -19,8 +19,8 @@ routerAuth.post(
   validateBody(registerSchema),
   ctrlWrapper(register)
 );
-routerAuth.post("/login", validateBody(loginSchema), ctrlWrapper(login));
-routerAuth.post("/refresh", authenticate, ctrlWrapper(refreshSession));
-routerAuth.post("/logout", authenticate, ctrlWrapper(logout));
+routerAuth.post("auth/login", validateBody(loginSchema), ctrlWrapper(login));
+routerAuth.post("auth/refresh", authenticate, ctrlWrapper(refreshSession));
+routerAuth.post("auth/logout", authenticate, ctrlWrapper(logout));
 
 export default routerAuth;
