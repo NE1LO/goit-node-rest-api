@@ -13,48 +13,39 @@ import { authenticate } from "../middleware/authenticate.js";
 import {
   createContactSchema,
   updateContactSchema,
-} from "../validation/contactsValidate.js";
+} from "../validation/contacts.js";
 import validateId from "../middleware/validateId.js";
 import { validateBody } from "../middleware/validateBody.js";
-import { registerSchema } from "../validation/authValidate.js";
 
-const contactsRouter = Router();
+const router = Router();
 
-contactsRouter.use(
-  "/contacts/:contactId",
-  authenticate,
-  validateId("contactId")
-);
-contactsRouter.get(
-  "/contacts",
-  authenticate,
-  ctrlWrapper(getAllContactsController)
-);
-contactsRouter.get(
+router.use("/contacts/:contactId", authenticate, validateId("contactId"));
+router.get("/contacts", authenticate, ctrlWrapper(getAllContactsController));
+router.get(
   "/contacts/:contactId",
   authenticate,
   ctrlWrapper(getContactByIdController)
 );
 
 //#=================================================> CREATE NEW CONTACT
-contactsRouter.post(
+router.post(
   "/contacts",
   validateBody(createContactSchema),
   authenticate,
   ctrlWrapper(createContactController)
 );
-contactsRouter.delete(
+router.delete(
   "/contacts/:contactId",
   authenticate,
   ctrlWrapper(deleteContactController)
 );
-contactsRouter.put(
+router.put(
   "/contacts/:contactId",
   authenticate,
   validateBody(createContactSchema),
   ctrlWrapper(updateContactController)
 );
-contactsRouter.patch(
+router.patch(
   "/contacts/:contactId",
   authenticate,
   (req, res, next) => {
@@ -66,4 +57,4 @@ contactsRouter.patch(
 );
 //#=================================================> Registration
 
-export default contactsRouter;
+export default router;

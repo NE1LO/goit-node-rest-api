@@ -1,99 +1,74 @@
-import {
-  createUser,
-  loginUser,
-  refreshUserSession,
-  deleteSession,
-} from "../services/auth.js";
-import createHttpError from "http-errors";
-
-export const register = async (req, res, next) => {
-  const { name, email, password } = req.body;
-
+import { registerUser } from "../services/auth.js";
+import { loginUser } from "../services/auth.js";
+import { ONE_DAY } from "../constants/index.js";
+import { refreshUsersSession } from "../services/auth.js";
+import { logoutUser } from "../services/auth.js";
+//########################################################################################################REGISTER
+export const registerUserController = async (req, res, next) => {
   try {
-    const existingUser = await createUser({ name, email, password });
-
+    const user = await registerUser(req.body);
     res.status(201).json({
-      status: "success",
+      status: 201,
       message: "Successfully registered a user!",
-      data: {
-        id: existingUser._id,
-        name: existingUser.name,
-        email: existingUser.email,
-      },
+      data: user,
     });
   } catch (error) {
-    if (error.message === "Email in use") {
-      next(createHttpError(409, "Email in use"));
-    } else {
-      next(createHttpError(500, "Internal Server Error"));
-    }
+    next(error);
   }
 };
-
-export const login = async (req, res, next) => {
-  const { email, password } = req.body;
-
+//########################################################################################################LOGIN_USER
+export const loginUserController = async (req, res, next) => {
   try {
-    const { accessToken, refreshToken } = await loginUser(email, password);
+    const session = await loginUser(req.body);
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 днів
-    });
+    setupSession(res, session);
 
-    res.status(200).json({
-      status: "success",
+    res.json({
+      status: 200,
       message: "Successfully logged in an user!",
       data: {
-        accessToken,
+        accessToken: session.accessToken,
       },
     });
   } catch (error) {
-    if (error.message === "Invalid email or password") {
-      next(createHttpError(401, "Invalid email or password"));
-    } else {
-      next(createHttpError(500, "Internal Server Error"));
-    }
+    next(error);
   }
 };
-
-export const refreshSession = async (req, res, next) => {
-  const { refreshToken } = req.cookies;
-
-  if (!refreshToken) {
-    return next(createHttpError(401, "Refresh token is missing"));
+//########################################################################################################LOGOUT
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
   }
+  res.clearCookie("sessionId");
+  res.clearCookie("refreshToken");
 
-  try {
-    const newAccessToken = await refreshUserSession(refreshToken);
-
-    res.status(200).json({
-      status: "success",
-      message: "Successfully refreshed a session!",
-      data: {
-        accessToken: newAccessToken,
-      },
-    });
-  } catch (error) {
-    next(createHttpError(401, "Invalid refresh token"));
-  }
+  res.status(204).send();
 };
+//########################################################################################################SETUP_SESSION
+const setupSession = (res, session) => {
+  res.cookie("refreshToken", session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+  res.cookie("sessionId", session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+};
+//########################################################################################################REFRESH_SESSION
+export const refreshUserSessionController = async (req, res) => {
+  const session = await refreshUsersSession({
+    sessionId: req.cookies.sessionId,
+    refreshToken: req.cookies.refreshToken,
+  });
 
-//#########################################################################>>>>LOGOUT
+  setupSession(res, session);
 
-export const logout = async (req, res, next) => {
-  const { refreshToken } = req.cookies;
-
-  if (!refreshToken) {
-    return next(createHttpError(401, "Refresh token is missing"));
-  }
-
-  try {
-    await deleteSession(refreshToken);
-    res.clearCookie("refreshToken");
-    res.status(204).send();
-  } catch (error) {
-    next(createHttpError(500, "Internal Server Error"));
-  }
+  res.json({
+    status: 200,
+    message: "Successfully refreshed a session!",
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 };
