@@ -4,7 +4,7 @@ import {
   getContactByIdController,
   createContactController,
   deleteContactController,
-  updateContactController,
+  upsertContactController,
   patchContactController,
 } from "../controllers/contacts.js";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
@@ -16,11 +16,15 @@ import {
 } from "../validation/contacts.js";
 import validateId from "../middleware/validateId.js";
 import { validateBody } from "../middleware/validateBody.js";
-
+import { upload } from "../middleware/multer.js";
+//#################################################################################
+//#################################################################################
 const router = Router();
 
 router.use("/contacts/:contactId", authenticate, validateId("contactId"));
+//#################################################################################
 router.get("/contacts", authenticate, ctrlWrapper(getAllContactsController));
+//#################################################################################
 router.get(
   "/contacts/:contactId",
   authenticate,
@@ -30,23 +34,29 @@ router.get(
 //#=================================================> CREATE NEW CONTACT
 router.post(
   "/contacts",
+  upload.single("photo"),
   validateBody(createContactSchema),
   authenticate,
   ctrlWrapper(createContactController)
 );
+//#################################################################################
 router.delete(
   "/contacts/:contactId",
   authenticate,
   ctrlWrapper(deleteContactController)
 );
+//#################################################################################
 router.put(
   "/contacts/:contactId",
+  upload.single("photo"),
   authenticate,
   validateBody(createContactSchema),
-  ctrlWrapper(updateContactController)
+  ctrlWrapper(upsertContactController)
 );
+//#################################################################################
 router.patch(
   "/contacts/:contactId",
+  upload.single("photo"),
   authenticate,
   (req, res, next) => {
     console.log("PATCH request received");

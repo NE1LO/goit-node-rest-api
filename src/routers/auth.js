@@ -13,29 +13,31 @@ import {
   logoutUserController,
 } from "../controllers/auth.js";
 const router = Router();
-
+//#################################################__REGISTER__
 router.post(
   "/register",
   validateBody(registerUserSchema),
   registerUserController
 );
-
+//#################################################__LOGIN__
 router.post(
   "/login",
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController)
 );
-
+//#################################################__LOGOUT__
 router.post("/logout", ctrlWrapper(logoutUserController));
 
+//#################################################__REFRESH__
 router.post("/refresh", ctrlWrapper(refreshUserSessionController));
 
+//#################################################__SEND__TO__EMAIL__
 router.post(
   "/send-reset-email",
   validateBody(requestResetEmailSchema),
   ctrlWrapper(requestResetEmailController)
 );
-
+//#################################################__RESED__PWD__
 router.post(
   "/reset-pwd",
   validateBody(resetPasswordSchema),

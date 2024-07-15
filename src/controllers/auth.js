@@ -17,7 +17,7 @@ export const registerUserController = async (req, res, next) => {
     next(error);
   }
 };
-
+//#################################################################################LOGIN
 export const loginUserController = async (req, res, next) => {
   try {
     const session = await loginUser(req.body);
@@ -35,7 +35,7 @@ export const loginUserController = async (req, res, next) => {
     next(error);
   }
 };
-
+//#################################################################################LOGOUT
 export const logoutUserController = async (req, res) => {
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
@@ -45,7 +45,7 @@ export const logoutUserController = async (req, res) => {
 
   res.status(204).send();
 };
-
+//#################################################################################SETUP_SESSION
 const setupSession = (res, session) => {
   res.cookie("refreshToken", session.refreshToken, {
     httpOnly: true,
@@ -56,7 +56,7 @@ const setupSession = (res, session) => {
     expires: new Date(Date.now() + ONE_DAY),
   });
 };
-
+//#################################################################################REFRESH_SESSION
 export const refreshUserSessionController = async (req, res) => {
   const session = await refreshUsersSession({
     sessionId: req.cookies.sessionId,
@@ -73,7 +73,7 @@ export const refreshUserSessionController = async (req, res) => {
     },
   });
 };
-
+//#################################################################################RESET_EMAIL
 export const requestResetEmailController = async (req, res) => {
   console.log("Received request for password reset");
   await requestResetToken(req.body.email);
@@ -84,7 +84,7 @@ export const requestResetEmailController = async (req, res) => {
     data: {},
   });
 };
-
+//#################################################################################RESET_PWD
 export const resetPasswordController = async (req, res) => {
   await resetPassword(req.body);
   res.json({
