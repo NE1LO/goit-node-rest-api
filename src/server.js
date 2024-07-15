@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import pino from "pino-http";
 import router from "./routers/index.js";
-import routerAuth from "./routers/auth.js";
 import cookieParser from "cookie-parser";
 
 import { notFoundHandler } from "./utils/notFoundHandler.js";
