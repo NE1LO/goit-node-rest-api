@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Contacts
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  description: >
+    This is a documentation of contacts app
+tags:
+  - name: Contacts
+    description: Operations about users.
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+servers:
+  - url: http://localhost:3000
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /contacts:
+    get:
+      security:
+        - bearerAuth: []
+      $ref: ../swagger/paths/contacts/get.yaml
+    post:
+      security:
+        - bearerAuth: []
+      $ref: ../swagger/paths/contacts/post.yaml
+  /contacts/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      $ref: ../swagger/paths/contacts/{id}/get.yaml
+    patch:
+      security:
+        - bearerAuth: []
+      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+    delete:
+      security:
+        - bearerAuth: []
+      $ref: ../swagger/paths/contacts/{id}/delete.yaml
