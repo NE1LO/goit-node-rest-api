@@ -45,7 +45,9 @@ export const getContactById = async (contactId, userId) => {
 
 //#=================================================> CREATE NEW CONTACT
 export const createContact = async (payload) => {
-  return await Contact.create(payload);
+  console.log("Peyload post", payload);
+  const contact = await Contact.create(payload);
+  return contact;
 };
 
 //#=================================================> DELETE CONTACT

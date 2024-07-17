@@ -35,8 +35,12 @@ router.get(
 router.post(
   "/contacts",
   upload.single("photo"),
-  validateBody(createContactSchema),
+  (req, res, next) => {
+    console.log("After upload middleware, req.file:", req.file);
+    next();
+  },
   authenticate,
+  validateBody(createContactSchema),
   ctrlWrapper(createContactController)
 );
 //#################################################################################

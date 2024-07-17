@@ -52,13 +52,42 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 //########################################################################################################
+console.log("createContact:", createContact);
+
 export const createContactController = async (req, res, next) => {
-  const contact = await createContact({ ...req.body, userId: req.user._id });
-  res.status(201).json({
-    status: "success",
-    message: "Successfully created a contact!",
-    data: contact,
-  });
+  try {
+    const { _id: userId } = req.user;
+    const photo = req.file;
+    console.log(photo);
+    let photoUrl;
+    console.log(photoUrl);
+    if (photo) {
+      if (ENV_VARS.ENABLE_CLOUDINARY === "true") {
+        photoUrl = await saveFileToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToUploadDir(photo);
+      }
+    }
+
+    console.log(photo);
+    console.log(photoUrl);
+    console.log("createContactController starts create contact");
+
+    const contact = await createContact({
+      ...req.body,
+      userId,
+      photo: photoUrl,
+    });
+
+    res.status(201).json({
+      status: 201,
+      message: "Contact created successfully",
+      data: contact,
+    });
+  } catch (error) {
+    console.log("createContactController error:", error);
+    next(error);
+  }
 };
 //########################################################################################################
 export const deleteContactController = async (req, res, next) => {
@@ -137,7 +166,6 @@ export const patchContactController = async (req, res, next) => {
       photoUrl = await saveFileToUploadDir(photo);
     }
   }
-  //#################################################################################UPDATE_WITH_PHOTO
   const result = await updateContact(contactId, userId, {
     ...req.body,
     photo: photoUrl,
