@@ -45,7 +45,9 @@ export const getContactById = async (contactId, userId) => {
 
 //#=================================================> CREATE NEW CONTACT
 export const createContact = async (payload) => {
-  return await Contact.create(payload);
+  console.log("Peyload post", payload);
+  const contact = await Contact.create(payload);
+  return contact;
 };
 
 //#=================================================> DELETE CONTACT
@@ -57,6 +59,7 @@ export const deleteContact = async (contactId, userId) => {
 };
 
 //#=================================================> UPDATE CONTACT BY ID
+
 export const updateContact = async (
   contactId,
   userId,
@@ -66,11 +69,15 @@ export const updateContact = async (
   const rawResult = await Contact.findOneAndUpdate(
     { _id: contactId, userId },
     payload,
+
     {
       new: true,
+      includeResultMetadata: true,
       ...options,
     }
   );
 
-  return rawResult;
+  if (!rawResult || !rawResult.value) return null;
+
+  return rawResult.value;
 };
